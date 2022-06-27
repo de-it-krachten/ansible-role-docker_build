@@ -1,6 +1,0 @@
----
-
-docker_build_pip_packages:
-  - e2j2
-  - "yq==2.12.2"
-  - jmespath

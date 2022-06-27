@@ -22,6 +22,10 @@ molecule:
       - python
       - docker
       - docker_compose
+    vars:
+      docker_daemon_options:
+        "storage-driver": "vfs"
+
   platforms_skip:
     - name: centos7
       image: "geerlingguy/docker-centos7-ansible:latest"
@@ -29,3 +33,6 @@ molecule:
 ci_templates:
   requirements.yml:
     force: false
+  verify.yml:
+    force: false
+
