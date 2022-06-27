@@ -1,0 +1,73 @@
+---
+
+- name: Load variables based on OS type
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - "family-{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+        - "family-{{ ansible_os_family }}.yml"
+        - default.yml
+      paths:
+        - 'vars'
+
+- name: Install all packages required
+  package:
+    name: "{{ docker_build_packages }}"
+    state: present
+  become: yes
+
+- name: Install all pip packages required
+  pip:
+    name: "{{ docker_build_pip_packages }}"
+    state: present
+  become: yes
+
+- name: Create destination directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ docker_build_location }}"
+  become: yes
+
+- name: Get directory structure
+  set_fact:
+    filelist: "{{ lookup('filetree', 'files/', wantlist=True) }}"
+
+- name: Setup directory structure
+  file:
+    path: "{{ docker_build_location }}/{{ item.path }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ filelist }}"
+  loop_control:
+     label:
+       - "{{ item.path }}"
+  when: item.state == 'directory'
+  become: yes
+
+- name: Copy all scripts + templates
+  copy:
+    src: "files/{{ item.path }}"
+    dest: "{{ docker_build_location }}/{{ item.path }}"
+    mode: "{{ '0755' if item.path is search('\\.sh$') else '0644' }}"
+  loop: "{{ filelist }}"
+  loop_control:
+     label:
+       - "{{ item.path }}"
+  when: item.state == 'file'
+  become: yes
+
+- name: Link from /usr/local/bin
+  file:
+    src: "{{ docker_build_location }}/{{ item }}"
+    dest: /usr/local/bin/{{ item }}
+    state: link
+  loop:
+    - docker-build.sh
+    - docker-init.sh
+  become: yes

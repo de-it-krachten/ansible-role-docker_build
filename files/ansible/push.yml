@@ -1,0 +1,17 @@
+---
+
+- hosts: localhost
+  vars:
+    docker_push: "{{ lookup('env', 'DOCKER_PUSH') | default(False) }}"
+  tasks:
+    - name: Load pipeline variable from file
+      set_fact:
+        build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
+
+    - name: Tag and push to docker hub
+      community.docker.docker_image:
+        name: "{{ build_vars.image.name }}"
+        repository: "{{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ build_vars.image.tag }}"
+        push: yes
+        source: local
+      when: docker_push|bool

@@ -1,0 +1,74 @@
+---
+
+# Create image using ansible and deploy an container
+- hosts: localhost
+  become: yes
+  tasks:
+
+    - name: Load pipeline variable from file
+      set_fact:
+        build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
+
+    - name: Show settings
+      debug:
+        msg: "{{ build_vars }}"
+
+    - name: Create temporary build directory
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: build
+      register: _build_path
+
+    - name: Defined build path
+      set_fact:
+        buildpath: "{{ _build_path.path }}"
+
+    - name: Create Dockerfile from template
+      template:
+        src: "{{ lookup('env', 'SOURCE_PATH') + '/Dockerfile.j2' }}"
+        dest: "{{ buildpath }}/Dockerfile"
+        mode: "0644"
+
+    - name: Delete Docker container
+      docker_container:
+        name: "{{ build_vars.container.name }}"
+        state: absent
+        container_default_behavior: compatibility
+
+    - name: Delete Docker image
+      docker_image:
+        name: "{{ build_vars.image.name }}"
+        state: absent
+
+    - name: Create image from Dockerfile
+      docker_image:
+        name: "{{ build_vars.image.name }}"
+        source: build
+        build:
+          path: "{{ buildpath }}"
+          pull: yes
+          args: "{{ docker_container_build_args | default(omit) }}"
+
+    - name: Deploy container from new image
+      docker_container:
+        name: "{{ build_vars.container.name }}"
+        image: "{{ build_vars.image.name }}"
+        container_default_behavior: no_defaults
+        privileged: "{{ build_vars.container.priviledged | default(False) }}"
+        volumes: "{{ build_vars.container.volumes | default(omit) }}"
+
+
+# Add container to inventory
+- hosts: localhost
+  tasks:
+
+    - name: Add docker container
+      add_host:
+        name: "{{ build_vars.container.name }}"
+        ansible_connection: docker
+        ansible_host: "{{ build_vars.container.name }}"
+        ansible_user: root
+        # ansible_docker_extra_args: >-
+        #   -H tcp://127.0.0.1:2375
+        groups:
+          - containers

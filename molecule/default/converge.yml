@@ -1,0 +1,19 @@
+---
+
+- name: Converge
+  hosts: all
+  vars:
+  pre_tasks:
+    - name: Create 'remote_tmp'
+      file:
+        path: /root/.ansible/tmp
+        state: directory
+        mode: "0700"
+  roles:
+    - python
+    - docker
+    - docker_compose
+  tasks:
+    - name: Include role 'ansible-role-docker_build'
+      include_role:
+        name: ansible-role-docker_build

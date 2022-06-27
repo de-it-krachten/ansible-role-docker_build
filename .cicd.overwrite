@@ -1,0 +1,22 @@
+---
+
+# Generic
+generic:
+  role: ansible-role-docker_build
+  role_short: docker_build
+  role_description: |
+    Install tooling for settings up automatic docker builds
+
+github:
+  fail_fast: false
+
+molecule:
+  converge:
+    roles:
+      - python
+      - docker
+      - docker_compose
+
+ci_templates:
+  requirements.yml:
+    force: false

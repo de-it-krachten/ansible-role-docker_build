@@ -1,0 +1,6 @@
+---
+
+- import_playbook: build-pre.yml
+- import_playbook: build-custom.yml
+- import_playbook: build-post.yml
+- import_playbook: push.yml
