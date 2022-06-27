@@ -11,5 +11,4 @@ docker_build_packages:
 # list of pip packages to install
 docker_build_pip_packages:
   - e2j2
-  - yq
   - jmespath

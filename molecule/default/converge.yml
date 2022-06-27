@@ -3,6 +3,7 @@
 - name: Converge
   hosts: all
   vars:
+    docker_daemon_options: {'storage-driver': 'vfs'}
   pre_tasks:
     - name: Create 'remote_tmp'
       file:

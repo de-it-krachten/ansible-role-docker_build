@@ -14,10 +14,16 @@
     - name: Initialize build directory  # noqa no-changed-when
       command: /usr/local/bin/docker-init.sh
 
-    - name: Perform container build using defaults
-      command: /usr/local/bin/docker-build.sh  # noqa no-changed-when
+    - name: Perform container build using defaults  # noqa no-changed-when
+      command: /usr/local/bin/docker-build.sh
+      ignore_errors: yes
       register: _container_build
 
     - name: Show build log
       debug:
         var: _container_build
+
+    - name: Fail
+      fail:
+        msg: "docker build failed"
+      when: _container_build.failed|bool
