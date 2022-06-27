@@ -10,9 +10,7 @@ Install tooling for settings up automatic docker builds
 
 Supported platforms
 
-- Red Hat Enterprise Linux 7<sup>1</sup>
 - Red Hat Enterprise Linux 8<sup>1</sup>
-- CentOS 7
 - CentOS 8
 - RockyLinux 8
 - AlmaLinux 8<sup>1</sup>
@@ -39,6 +37,19 @@ docker_build_packages:
    - git
 
 # list of pip packages to install
+docker_build_pip_packages:
+  - e2j2
+  - "yq==2.12.2"
+  - jmespath
+</pre></code>
+
+### vars/default.yml
+<pre><code>
+
+</pre></code>
+
+### vars/family-RedHat-8.yml
+<pre><code>
 docker_build_pip_packages:
   - e2j2
   - "yq==2.12.2"
