@@ -1,0 +1,8 @@
+---
+
+- hosts: localhost
+  tasks:
+    - name: Construct basic auth
+      set_fact:
+        docker_auth: >-
+          {{ docker_login_user + ':' + docker_login_password | b64encode }}

@@ -1,0 +1,13 @@
+---
+
+- hosts: localhost
+  vars:
+    docker_push: "{{ lookup('env', 'DOCKER_PUSH') | default(False) }}"
+  tasks:
+    - name: Load pipeline variable from file
+      set_fact:
+        build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
+
+    - name: Save running container as image
+      command: >-
+        docker commit {{ build_vars.container.name }} {{ build_vars.image.name }}

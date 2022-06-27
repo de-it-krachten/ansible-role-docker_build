@@ -1,0 +1,15 @@
+---
+
+# target location
+docker_build_location: /usr/local/docker-build
+
+# list of OS packages to install
+docker_build_packages:
+   - rsync
+   - git
+
+# list of pip packages to install
+docker_build_pip_packages:
+  - e2j2
+  - "yq==2.12.2"
+  - jmespath
