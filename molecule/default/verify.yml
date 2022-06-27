@@ -5,6 +5,19 @@
   hosts: all
   gather_facts: false
   tasks:
-  - name: Example assertion
-    assert:
-      that: true
+    - name: Create build directory
+      tempfile:
+        state: directory
+        suffix: docker_build
+      register: _build_dir
+
+    - name: Initialize build directory  # noqa no-changed-when
+      command: /usr/local/bin/docker-init.sh
+
+    - name: Perform container build using defaults
+      command: /usr/local/bin/docker-build.sh  # noqa no-changed-when
+      register: _container_build
+
+    - name: Show build log
+      debug:
+        var: _container_build
