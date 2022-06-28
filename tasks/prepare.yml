@@ -1,0 +1,9 @@
+---
+
+- name: Prepare host for docker_build
+  include_role:
+    name: "{{ item }}"
+  loop:
+    - python
+    - docker
+    - docker_compose

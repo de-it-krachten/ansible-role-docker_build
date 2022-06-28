@@ -18,11 +18,8 @@ github:
 
 molecule:
   converge:
-    roles:
-      - python
-      - docker
-      - docker_compose
     vars:
+      docker_build_preparation: true
       docker_daemon_options:
         "storage-driver": "vfs"
 
