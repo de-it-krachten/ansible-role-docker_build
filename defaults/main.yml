@@ -1,5 +1,8 @@
 ---
 
+# Prepare host (docker/python)
+docker_build_preparation: false
+
 # target location
 docker_build_location: /usr/local/docker-build
 
