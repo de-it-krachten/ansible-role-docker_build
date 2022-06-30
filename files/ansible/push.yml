@@ -8,7 +8,11 @@
       set_fact:
         build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
 
-    - name: Tag and push to docker hub
+    - name: Show remote target
+      debug:
+        msg: "Remote target : {{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ build_vars.image.tag }}"
+
+    - name: Push image to remote target
       community.docker.docker_image:
         name: "{{ build_vars.image.name }}"
         repository: "{{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ build_vars.image.tag }}"

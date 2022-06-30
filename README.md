@@ -28,6 +28,9 @@ Note:
 ## Role Variables
 ### defaults/main.yml
 <pre><code>
+# Prepare host (docker/python)
+docker_build_preparation: false
+
 # target location
 docker_build_location: /usr/local/docker-build
 
@@ -39,21 +42,12 @@ docker_build_packages:
 # list of pip packages to install
 docker_build_pip_packages:
   - e2j2
-  - "yq==2.12.2"
   - jmespath
 </pre></code>
 
 ### vars/default.yml
 <pre><code>
 
-</pre></code>
-
-### vars/family-RedHat-8.yml
-<pre><code>
-docker_build_pip_packages:
-  - e2j2
-  - "yq==2.12.2"
-  - jmespath
 </pre></code>
 
 
@@ -64,16 +58,8 @@ docker_build_pip_packages:
 - name: sample playbook for role 'docker_build'
   hosts: all
   vars:
-  pre_tasks:
-    - name: Create 'remote_tmp'
-      file:
-        path: /root/.ansible/tmp
-        state: directory
-        mode: "0700"
-  roles:
-    - python
-    - docker
-    - docker_compose
+    docker_build_preparation: True
+    docker_daemon_options: {'storage-driver': 'vfs'}
   tasks:
     - name: Include role 'docker_build'
       include_role:
