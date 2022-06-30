@@ -10,9 +10,4 @@ container:
   priviledged: false      # should the container be started in privileged mode
   volumes: []             # volumes to provide to the container
 environment:
-  HTTPS_PROXY: <= proxy_url if proxy_url is defined and proxy_url|length > 0 else '' =>
-  HTTP_PROXY: <= proxy_url if proxy_url is defined and proxy_url|length > 0 else '' =>
-  NO_PROXY: <= proxy_skip if proxy_skip is defined and proxy_skip|length > 0 else '' =>
-  https_proxy: <= proxy_url if proxy_url is defined and proxy_url|length > 0 else '' =>
-  http_proxy: <= proxy_url if proxy_url is defined and proxy_url|length > 0 else '' =>
-  no_proxy: <= proxy_skip if proxy_skip is defined and proxy_skip|length > 0 else '' =>
+  var1: value1

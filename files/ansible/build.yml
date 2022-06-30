@@ -2,5 +2,6 @@
 
 - import_playbook: build-pre.yml
 - import_playbook: build-custom.yml
+  when: build_vars.container.name is defined
 - import_playbook: build-post.yml
-- import_playbook: push.yml
+#- import_playbook: push.yml

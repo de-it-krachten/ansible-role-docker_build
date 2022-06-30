@@ -17,12 +17,44 @@ function Cleanup
 
 }
 
+function Python
+{
+
+  OS_NAME=$(lsb_release -is)
+  OS_RELEASE=$(lsb_release -rs | sed "s/\..*//")
+
+  if [[ $OS_NAME == "RedHatEnterpriseServer" && $OS_RELEASE =~ "7" ]]
+  then
+    Force_python2=true
+  fi
+
+}
+
+function Setup
+{
+
+  echo "Copying ansible code into temporary directory '${TMPDIR}'"
+  rsync -av ${TEMPLATEDIR}/ansible ${TMPDIR}
+  cp docker-settings.yml ${TMPDIR}/ansible
+  [[ -f requirements.yml ]] && cp requirements.yml ${TMPDIR}/ansible/roles
+  [[ -f build-custom.yml ]] && cp build-custom.yml ${TMPDIR}/ansible
+  [[ -d additional_files ]] && rsync -av additional_files/ ${TMPDIR}
+
+  cd ${TMPDIR}/ansible
+  Ansible_args="-i localhost, -c local -e build_refresh=$Build_refresh"
+  [[ -n $Force_python2 ]] && Ansible_args="$Ansible_args -e force_python2=$Force_python2"
+  ansible-galaxy install -r ${TMPDIR}/ansible/roles/requirements.yml -p ${TMPDIR}/ansible/roles/ --ignore-errors
+
+}
+
+
 Debug=false
 Build=true
 Push=false
+Build_refresh=true
 
 # parse command line into arguments and check results of parsing
-while getopts :bBdpP OPT
+while getopts :bBdpPrR OPT
 do
    case $OPT in
      b) Build=true
@@ -35,6 +67,10 @@ do
      p) Push=true
         ;;
      P) Push=false
+        ;;
+     r) Build_refresh=true
+        ;;
+     R) Build_refresh=false
         ;;
      *) echo "Unknown flag -$OPT given!" >&2
         exit 1
@@ -59,19 +95,26 @@ trap 'cd / ; Cleanup' EXIT
 export SOURCE_PATH=$PWD
 export DOCKER_PUSH=$Push
 
+Python
+
+
+if [[ ! -f docker-settings.yml ]]
+then
+  echo "Docker build project not initialized!" >&2
+  echo "Execute 'docker-init.sh' and edit docker-settings.yml to reflect your requirements." >&2
+  exit 1
+fi
+
 
 #----------------------------------------------------------
 # set-up required structure
 #----------------------------------------------------------
 
-if [[ $Build == true ]]
-then
-  echo "Copying ansible code into temporary directory '${TMPDIR}'"
-  rsync -av ${TEMPLATEDIR}/ansible ${TMPDIR}
-  cp docker-settings.yml ${TMPDIR}/ansible
-  [[ -f requirements.yml ]] && cp requirements.yml ${TMPDIR}/ansible/roles
-  [[ -f build-custom.yml ]] && cp build-custom.yml ${TMPDIR}/ansible
-fi
+echo "================================================================="
+echo "Executing setup phase"
+echo "================================================================="
+Setup
+
 
 #----------------------------------------------------------
 # build image
@@ -79,10 +122,21 @@ fi
 
 if [[ $Build == true ]]
 then
-  cd ${TMPDIR}/ansible
-  # Ansible_args="-i localhost, -c local -e ansible_python_interpreter=/usr/libexec/platform-python"
-  Ansible_args="-i localhost, -c local -e ansible_python_interpreter=/usr/bin/python3"
-  ansible-galaxy install -r roles/requirements.yml -p roles/ --ignore-errors
-  ansible-playbook build.yml $Ansible_args
-  cd - >/dev/null
+  echo "================================================================="
+  echo "Executing build phase"
+  echo "================================================================="
+  ansible-playbook ${TMPDIR}/ansible/build.yml $Ansible_args
+fi
+
+
+#----------------------------------------------------------
+# push image
+#----------------------------------------------------------
+
+if [[ $Push == true ]]
+then
+  echo "================================================================="
+  echo "Executing push phase"
+  echo "================================================================="
+  ansible-playbook ${TMPDIR}/ansible/push.yml $Ansible_args
 fi

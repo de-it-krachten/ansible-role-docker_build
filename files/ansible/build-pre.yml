@@ -3,6 +3,9 @@
 # Create image using ansible and deploy an container
 - hosts: localhost
   become: yes
+  vars:
+    ansible_python_interpreter: "{{ '/usr/bin/python' if force_python2 is defined else '/usr/bin/python3' }}"
+    build_refresh: true
   tasks:
 
     - name: Load pipeline variable from file
@@ -29,33 +32,44 @@
         dest: "{{ buildpath }}/Dockerfile"
         mode: "0644"
 
-    - name: Delete Docker container
-      docker_container:
-        name: "{{ build_vars.container.name }}"
-        state: absent
-        container_default_behavior: compatibility
+    - block:
 
-    - name: Delete Docker image
-      docker_image:
-        name: "{{ build_vars.image.name }}"
-        state: absent
+        - name: Delete Docker container
+          docker_container:
+            name: "{{ build_vars.container.name }}"
+            state: absent
+            container_default_behavior: compatibility
+          when: build_vars.container.name is defined
 
-    - name: Create image from Dockerfile
-      docker_image:
-        name: "{{ build_vars.image.name }}"
-        source: build
-        build:
-          path: "{{ buildpath }}"
-          pull: yes
-          args: "{{ docker_container_build_args | default(omit) }}"
+        - name: Delete Docker image
+          docker_image:
+            name: "{{ build_vars.image.name }}"
+            state: absent
 
-    - name: Deploy container from new image
-      docker_container:
-        name: "{{ build_vars.container.name }}"
-        image: "{{ build_vars.image.name }}"
-        container_default_behavior: no_defaults
-        privileged: "{{ build_vars.container.priviledged | default(False) }}"
-        volumes: "{{ build_vars.container.volumes | default(omit) }}"
+        - name: Create image from Dockerfile
+          docker_image:
+            name: "{{ build_vars.image.name }}"
+            source: build
+            build:
+              path: "{{ buildpath }}"
+              pull: yes
+              args: "{{ docker_container_build_args | default(omit) }}"
+          register: _build
+
+        - name: Show build log
+          debug:
+            msg: "{{ _build.stdout_lines }}"
+
+        - name: Deploy container from new image
+          docker_container:
+            name: "{{ build_vars.container.name }}"
+            image: "{{ build_vars.image.name }}"
+            container_default_behavior: no_defaults
+            privileged: "{{ build_vars.container.priviledged | default(False) }}"
+            volumes: "{{ build_vars.container.volumes | default(omit) }}"
+          when: build_vars.container.name is defined
+
+      when: build_refresh|bool
 
 
 # Add container to inventory
@@ -72,3 +86,4 @@
         #   -H tcp://127.0.0.1:2375
         groups:
           - containers
+      when: build_vars.container.name is defined
