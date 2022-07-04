@@ -127,7 +127,7 @@ function OS_settings
   fi
 
   # For RHEL/CentOS 7, only Python2 is available
-  if [[ $REDHAT_SUPPORT_PRODUCT ~= (Red Hat Enterprise Linux|centos) && $REDHAT_SUPPORT_PRODUCT_VERSION == "7" ]]
+  if [[ $REDHAT_SUPPORT_PRODUCT =~ (Red Hat Enterprise Linux|centos) && $REDHAT_SUPPORT_PRODUCT_VERSION == "7" ]]
   then
     Force_python2=true
   fi
