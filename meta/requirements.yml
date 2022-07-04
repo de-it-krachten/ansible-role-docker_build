@@ -8,10 +8,6 @@
   src: https://github.com/de-it-krachten/ansible-role-docker_compose.git
   version: main
   scm: git
-- name: lsb
-  src: https://github.com/de-it-krachten/ansible-role-lsb.git
-  version: main
-  scm: git
 - name: python
   src: https://github.com/de-it-krachten/ansible-role-python.git
   version: main

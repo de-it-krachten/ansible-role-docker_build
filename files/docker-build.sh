@@ -117,19 +117,17 @@ function Cleanup
 
 }
 
-function Initialize
+function OS_settings
 {
 
-  # Get distro specifics
-  OS_NAME=$(lsb_release -is)
-  OS_RELEASE=$(lsb_release -rs)
-  OS_RELEASE_MAJOR=$(lsb_release -rs | sed "s/\..*//")
+  # Import OS specifics
+  if [[ -f /etc/os-releaase ]]
+  then
+    source /etc/os-releaase
+  fi
 
-  # Force Ansible to use colors
-  export PY_COLORS=1
-  export ANSIBLE_FORCE_COLOR=1
-
-  if [[ $OS_NAME == "RedHatEnterpriseServer" && $OS_RELEASE_MAJOR == "7" ]]
+  # For RHEL/CentOS 7, only Python2 is available
+  if [[ $REDHAT_SUPPORT_PRODUCT ~= (Red Hat Enterprise Linux|centos) && $REDHAT_SUPPORT_PRODUCT_VERSION == "7" ]]
   then
     Force_python2=true
   fi
@@ -138,6 +136,10 @@ function Initialize
 
 function Setup
 {
+
+  # Force Ansible to use colors
+  export PY_COLORS=1
+  export ANSIBLE_FORCE_COLOR=1
 
   echo "Copying ansible code into temporary directory '${TMPDIR}'"
   rsync -av ${TEMPLATEDIR}/ansible ${TMPDIR}
@@ -251,7 +253,7 @@ trap 'cd / ; Cleanup' EXIT
 export SOURCE_PATH=$PWD
 export DOCKER_PUSH=$Push
 
-Initialize
+OS_settings
 
 
 if [[ ! -f docker-settings.yml ]]
