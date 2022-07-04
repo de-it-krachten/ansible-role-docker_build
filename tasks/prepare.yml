@@ -4,7 +4,6 @@
   include_role:
     name: "{{ item }}"
   loop:
-    - lsb
     - python
     - docker
     - docker_compose

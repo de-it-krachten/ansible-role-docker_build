@@ -28,6 +28,7 @@
     name: "{{ docker_build_pip_packages }}"
     state: present
   become: yes
+  tags: molecule-idempotence-notest
 
 - name: Create destination directory
   file:

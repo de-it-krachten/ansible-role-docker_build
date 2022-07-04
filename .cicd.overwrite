@@ -7,14 +7,13 @@ generic:
   role_description: |
     Install tooling for settings up automatic docker builds
 
-platforms_skip:
-  - name: Red Hat Enterprise Linux 7
+platforms:
+  rhel7:
     ci: false
-  - name: CentOS 7
-    image: centos7
-
-github:
-  fail_fast: false
+    supported: false
+  centos7:
+    ci: false
+    supported: false
 
 molecule:
   converge:
@@ -22,14 +21,8 @@ molecule:
       docker_build_preparation: true
       docker_daemon_options:
         "storage-driver": "vfs"
-
-  platforms_skip:
-    - name: centos7
-      image: "geerlingguy/docker-centos7-ansible:latest"
-
-ci_templates:
-  requirements.yml:
-    force: false
-  verify.yml:
-    force: false
-
+  requirements:
+    roles_extra:
+      - docker
+      - docker_compose
+      - python
