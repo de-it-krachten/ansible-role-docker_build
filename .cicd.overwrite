@@ -7,6 +7,14 @@ generic:
   role_description: |
     Install tooling for settings up automatic docker builds
 
+platforms:
+  rhel7:
+    ci: false
+    supported: false
+  centos7:
+    ci: false
+    supported: false
+
 molecule:
   converge:
     vars:

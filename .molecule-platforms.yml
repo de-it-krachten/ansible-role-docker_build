@@ -1,7 +1,5 @@
 ---
 
-- name: centos7
-  image: geerlingguy/docker-centos7-ansible:latest
 - name: centos8
   image: geerlingguy/docker-centos8-ansible:latest
 - name: rockylinux8

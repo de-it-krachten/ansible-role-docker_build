@@ -10,10 +10,8 @@ Install tooling for settings up automatic docker builds
 
 Supported platforms
 
-- Red Hat Enterprise Linux 7<sup>1</sup>
 - Red Hat Enterprise Linux 8<sup>1</sup>
 - Red Hat Enterprise Linux 9<sup>1</sup>
-- CentOS 7
 - CentOS 8
 - RockyLinux 8
 - OracleLinux 8
