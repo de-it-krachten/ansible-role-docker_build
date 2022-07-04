@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.1.0...v1.2.0) (2022-07-04)
+
+
+### Features
+
+* Add support for RHEL9 ([30f6745](https://github.com/de-it-krachten/ansible-role-docker_build/commit/30f67453d43cd1b422af95ccf725b9e94106c9ce))
+
 # [1.1.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.0.1...v1.1.0) (2022-06-30)
 
 
