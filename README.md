@@ -13,6 +13,7 @@ Supported platforms
 - Red Hat Enterprise Linux 8<sup>1</sup>
 - Red Hat Enterprise Linux 9<sup>1</sup>
 - RockyLinux 8
+- RockyLinux 9
 - OracleLinux 8
 - AlmaLinux 8
 - AlmaLinux 9
@@ -59,6 +60,7 @@ docker_build_pip_packages:
 <pre><code>
 - name: sample playbook for role 'docker_build'
   hosts: all
+  become: "{{ molecule['converge']['become'] | default('yes') }}"
   vars:
     docker_build_preparation: True
     docker_daemon_options: {'storage-driver': 'vfs'}

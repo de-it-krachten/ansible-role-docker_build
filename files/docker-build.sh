@@ -93,17 +93,18 @@ Usage : $BASENAME <flags> <arguments>
 
 Flags :
 
-   -d|--debug      : Debug mode (set -x)
-   -D|--dry-run    : Dry run mode
-   -h|--help       : Prints this help message
-   -v|--verbose    : Verbose output
+   -d|--debug           : Debug mode (set -x)
+   -D|--dry-run         : Dry run mode
+   -h|--help            : Prints this help message
+   -v|--verbose         : Verbose output
 
-   -b|--build      : Run build phase (default)
-   -B|--no-build   : Do not run build phase 
-   -c|--cleanup    : Cleanup old image/container (default)
-   -C|--no-cleanup : Do not cleanup old image/container
-   -p|--push       : Push docker image to registry
-   -P|--no-push    : Do not push docker image to registry (default)
+   -b|--build           : Run build phase (default)
+   -B|--no-build        : Do not run build phase 
+   -c|--no-cleanup-pre  : Do not cleanup image/container prior to the build process
+   -C|--no-cleanup-post : Do not cleanup image/container after the build process
+   -p|--push            : Push docker image to registry
+   -P|--no-push         : Do not push docker image to registry (default)
+   -X|--clcred          : Clear docker credentials
 
 EOF
 
@@ -113,7 +114,8 @@ function Cleanup
 {
 
   [[ $Debug == false ]] && rm -fr ${TMPDIR}
-  rm -f ${HOME}/.docker/config.json
+  [[ $Docker_config_clean == true ]] && rm -f ${HOME}/.docker/config.json
+  /bin/true
 
 }
 
@@ -149,7 +151,7 @@ function Setup
   [[ -d additional_files ]] && rsync -av additional_files/ ${TMPDIR}
 
   cd ${TMPDIR}/ansible
-  Ansible_args="-i localhost, -c local -e build_refresh=$Build_refresh"
+  Ansible_args="-i localhost, -c local"
   [[ -n $Force_python2 ]] && Ansible_args="$Ansible_args -e force_python2=$Force_python2"
   ansible-galaxy install -r ${TMPDIR}/ansible/roles/requirements.yml -p ${TMPDIR}/ansible/roles/ --ignore-errors
 
@@ -174,11 +176,14 @@ Dry_run=false
 Echo=
 
 Build=true
-Push=false
 Build_refresh=true
+Push=false
+Cleanup_pre=true
+Cleanup_post=true
+Docker_config_clean=false
 
 # parse command line into arguments and check results of parsing
-while getopts :bBdDghv-: OPT
+while getopts :bBcCdDghpPvX-: OPT
 do
 
   # Support long options
@@ -194,21 +199,17 @@ do
       ;;
     B|no-build)
       Build=false
+      Build_refresh=false
       ;;
-    c|cleanup)
-      Cleanup=true
+    c|no-cleanup-pre)
+      Cleanup_pre=false
       ;;
-    C|no-cleanup)
-      Cleanup=false
+    C|no-cleanup-post)
+      Cleanup_post=false
       ;;
     d|debug)
       Verbose=true
-      Verbose_level=2
-      Verbose1="-v"
-      Debug_level=$(( $Debug_level + 1 ))
-      export Debug="set -vx"
-      $Debug
-      eval Debug${Debug_level}=\"set -vx\"
+      set -vx
       ;;
     D|dry-run)
       Dry_run=true
@@ -230,14 +231,17 @@ do
       Verbose_level=$(($Verbose_level+1))
       Verbose1="-v"
       ;;
+    X|clcred)
+      Docker_config_clean=true
+      ;;
     *)
       echo "Unknown flag -$OPT given!" >&2
       exit 1
       ;;
   esac
 
-  # Set flag to be use by Test_flag
-  eval ${OPT}flag=1
+#  # Set flag to be use by Test_flag
+#  eval ${OPT}flag=1
 
 done
 shift $(($OPTIND -1))
@@ -251,7 +255,19 @@ trap 'cd / ; Cleanup' EXIT
 #----------------------------------------------------------
 
 export SOURCE_PATH=$PWD
+export DOCKER_CLEANUP_PRE=$Cleanup_pre
+export DOCKER_BUILD=$Build
+export DOCKER_BUILD_REFRESH=$Build_refresh
 export DOCKER_PUSH=$Push
+export DOCKER_CLEANUP_POST=$Cleanup_post
+
+cat <<EOF
+DOCKER_CLEANUP_PRE=$Cleanup_pre
+DOCKER_BUILD=$Build
+DOCKER_BUILD_REFRESH=$Build_refresh
+DOCKER_PUSH=$Push
+DOCKER_CLEANUP_POST=$Cleanup_post
+EOF
 
 OS_settings
 
@@ -275,6 +291,20 @@ Setup
 
 
 #----------------------------------------------------------
+# cleanup previously created image / container
+#----------------------------------------------------------
+
+if [[ $Cleanup_pre == true ]]
+then
+  echo "================================================================="
+  echo "Executing cleanup phase (pre)"
+  echo "================================================================="
+
+  ansible-playbook ${TMPDIR}/ansible/build-cleanup.yml $Ansible_args
+
+fi
+
+#----------------------------------------------------------
 # build image
 #----------------------------------------------------------
 
@@ -283,7 +313,9 @@ then
   echo "================================================================="
   echo "Executing build phase"
   echo "================================================================="
+ 
   ansible-playbook ${TMPDIR}/ansible/build.yml $Ansible_args
+
 fi
 
 
@@ -296,12 +328,30 @@ then
   echo "================================================================="
   echo "Executing push phase"
   echo "================================================================="
+
   if [[ -n $DOCKER_AUTH_CONFIG && ! -f ${HOME}/.docker/config.json ]]
   then
     echo "Writing docker credentials"
     echo "${DOCKER_AUTH_CONFIG}" | jq . > ${HOME}/.docker/config.json
+    Docker_config_clean=true
   fi
+
   ansible-playbook ${TMPDIR}/ansible/push.yml $Ansible_args
+fi
+
+
+#----------------------------------------------------------
+# cleanup image / container
+#----------------------------------------------------------
+
+if [[ $Cleanup_post == true ]]
+then
+  echo "================================================================="
+  echo "Executing cleanup phase (post)"
+  echo "================================================================="
+
+  ansible-playbook ${TMPDIR}/ansible/build-cleanup.yml $Ansible_args
+
 fi
 
 # Exit cleanly

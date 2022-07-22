@@ -5,7 +5,6 @@
   become: yes
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/python' if force_python2 is defined else '/usr/bin/python3' }}"
-    build_refresh: true
   tasks:
 
     - name: Load pipeline variable from file
@@ -40,24 +39,6 @@
       when: build_vars.image.intermediate is defined
 
     - block:
-
-        - name: Delete Docker container
-          docker_container:
-            name: "{{ build_vars.container.name }}"
-            state: absent
-            container_default_behavior: compatibility
-          when: build_vars.container.name is defined
-
-        - name: Delete Docker image
-          docker_image:
-            name: "{{ build_vars.image.name }}"
-            state: absent
-
-        - name: Delete intermediate Docker image
-          docker_image:
-            name: "{{ build_vars.image.intermediate }}"
-            state: absent
-          when: build_vars.image.intermediate is defined
 
         - name: Build intermediate image
           docker_image:
@@ -94,7 +75,7 @@
             volumes: "{{ build_vars.container.volumes | default(omit) }}"
           when: build_vars.container.name is defined
 
-      when: build_refresh|bool
+      when: (lookup('env', 'DOCKER_BUILD_REFRESH')|bool)
 
 
 # Add container to inventory
