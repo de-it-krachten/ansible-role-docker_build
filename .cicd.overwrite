@@ -16,6 +16,9 @@ platforms:
     supported: false
 
 molecule:
+  prepare:
+    vars:
+      activate_epel: true
   converge:
     vars:
       docker_build_preparation: true
