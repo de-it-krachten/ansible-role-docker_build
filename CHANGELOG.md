@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.2.0...v1.3.0) (2022-07-22)
+
+
+### Features
+
+* add support for multiple platforms ([b5d4786](https://github.com/de-it-krachten/ansible-role-docker_build/commit/b5d478640d3eec498cfbcbfb849db7fc55aa9896))
+
 # [1.2.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.1.0...v1.2.0) (2022-07-04)
 
 
