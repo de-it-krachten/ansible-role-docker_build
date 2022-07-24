@@ -143,7 +143,7 @@ platforms:
     box: "generic/ubuntu1804"
     galaxy:
       name: Ubuntu
-      version: 18.04
+      version: bionic
   ubuntu2004:
     name: Ubuntu 20.04 LTS
     ci: true
@@ -152,7 +152,7 @@ platforms:
     box: "generic/ubuntu2004"
     galaxy:
       name: Ubuntu
-      version: 20.04
+      version: focal
   ubuntu2204:
     name: Ubuntu 22.04 LTS
     ci: true
@@ -161,7 +161,7 @@ platforms:
     box: "generic/ubuntu2204"
     galaxy:
       name: Ubuntu
-      version: 22.04
+      version: jammy
   fedora35:
     name: Fedora 35
     ci: true
@@ -229,6 +229,16 @@ github:
   parallel: true
   owner: de-it-krachten
   repo: ansible-role-docker_build
+  lint_matrix:
+    - name: ansible4
+      ansible: ">4,<5"
+      ansible_lint: ">5,<6"
+    - name: ansible5
+      ansible: ">5,<6"
+      ansible_lint: ">6,<7"
+    - name: ansible6
+      ansible: ">6,<7"
+      ansible_lint: ">6,<7"
 
 # Gitlab
 gitlab:
@@ -322,7 +332,7 @@ ci_templates:
   ansible-lint:
     src: molecule/templates/ansible-lint
     dest: .ansible-lint
-    force: no
+    # force: no
     when: molecule_active
   molecule-platforms.yml:
     src: molecule/templates/molecule-platforms.yml

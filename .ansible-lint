@@ -1,8 +1,9 @@
 ---
 
 exclude_paths:
-  - molecule/default/molecule-test.yml  
+  - molecule/default/molecule-test.yml
   - molecule/default/vars.yml
-  
+
 skip_list:
   - fqcn-builtins
+  - var-spacing
