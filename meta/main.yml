@@ -17,6 +17,11 @@ galaxy_info:
       versions:
         - buster
         - bullseye
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
     - name: Fedora
       versions:
         - all

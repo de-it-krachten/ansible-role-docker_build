@@ -15,7 +15,7 @@
 
 - name: Prepare host for docker_build using external roles
   ansible.builtin.include_tasks: prepare.yml
-  when: docker_build_preparation|bool
+  when: docker_build_preparation | bool
 
 - name: Install all packages required
   ansible.builtin.package:
@@ -50,8 +50,8 @@
     mode: "0755"
   loop: "{{ filelist }}"
   loop_control:
-     label:
-       - "{{ item.path }}"
+    label:
+      - "{{ item.path }}"
   when: item.state == 'directory'
   become: yes
 
@@ -62,8 +62,8 @@
     mode: "{{ '0755' if item.path is search('\\.sh$') else '0644' }}"
   loop: "{{ filelist }}"
   loop_control:
-     label:
-       - "{{ item.path }}"
+    label:
+      - "{{ item.path }}"
   when: item.state == 'file'
   become: yes
 
