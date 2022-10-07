@@ -38,7 +38,9 @@
         mode: "0644"
       when: build_vars.image.intermediate is defined
 
-    - block:
+    - name: Intermediate image
+      when: (lookup('env', 'DOCKER_BUILD_REFRESH')|bool)
+      block:
 
         - name: Build intermediate image
           docker_image:
@@ -74,8 +76,6 @@
             privileged: "{{ build_vars.container.priviledged | default(False) }}"
             volumes: "{{ build_vars.container.volumes | default(omit) }}"
           when: build_vars.container.name is defined
-
-      when: (lookup('env', 'DOCKER_BUILD_REFRESH')|bool)
 
 
 # Add container to inventory
