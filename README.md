@@ -6,6 +6,15 @@
 Install tooling for settings up automatic docker builds
 
 
+
+## Dependencies
+
+#### Roles
+None
+
+#### Collections
+- community.general
+
 ## Platforms
 
 Supported platforms
@@ -48,6 +57,7 @@ docker_build_pip_packages:
   - jmespath
 </pre></code>
 
+
 ### vars/default.yml
 <pre><code>
 
@@ -66,6 +76,6 @@ docker_build_pip_packages:
     docker_daemon_options: {'storage-driver': 'vfs'}
   tasks:
     - name: Include role 'docker_build'
-      include_role:
+      ansible.builtin.include_role:
         name: docker_build
 </pre></code>

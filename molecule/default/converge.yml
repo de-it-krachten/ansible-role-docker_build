@@ -8,5 +8,5 @@
     docker_daemon_options: {'storage-driver': 'vfs'}
   tasks:
     - name: Include role 'ansible-role-docker_build'
-      include_role:
+      ansible.builtin.include_role:
         name: ansible-role-docker_build

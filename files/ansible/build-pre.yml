@@ -39,7 +39,7 @@
       when: build_vars.image.intermediate is defined
 
     - name: Intermediate image
-      when: (lookup('env', 'DOCKER_BUILD_REFRESH')|bool)
+      when: (lookup('env', 'DOCKER_BUILD_REFRESH')| bool)
       block:
 
         - name: Build intermediate image

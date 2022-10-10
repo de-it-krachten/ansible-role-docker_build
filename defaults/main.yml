@@ -8,8 +8,8 @@ docker_build_location: /usr/local/docker-build
 
 # list of OS packages to install
 docker_build_packages:
-   - rsync
-   - git
+  - rsync
+  - git
 
 # list of pip packages to install
 docker_build_pip_packages:

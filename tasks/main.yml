@@ -1,7 +1,7 @@
 ---
 
 - name: Load variables based on OS type
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -14,24 +14,24 @@
         - 'vars'
 
 - name: Prepare host for docker_build using external roles
-  include_tasks: prepare.yml
-  when: docker_build_preparation|bool
+  ansible.builtin.include_tasks: prepare.yml
+  when: docker_build_preparation | bool
 
 - name: Install all packages required
-  package:
+  ansible.builtin.package:
     name: "{{ docker_build_packages }}"
     state: present
   become: yes
 
 - name: Install all pip packages required
-  pip:
+  ansible.builtin.pip:
     name: "{{ docker_build_pip_packages }}"
     state: present
   become: yes
   tags: molecule-idempotence-notest
 
 - name: Create destination directory
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     mode: "0755"
@@ -40,35 +40,35 @@
   become: yes
 
 - name: Get directory structure
-  set_fact:
+  ansible.builtin.set_fact:
     filelist: "{{ lookup('filetree', 'files/', wantlist=True) }}"
 
 - name: Setup directory structure
-  file:
+  ansible.builtin.file:
     path: "{{ docker_build_location }}/{{ item.path }}"
     state: directory
     mode: "0755"
   loop: "{{ filelist }}"
   loop_control:
-     label:
-       - "{{ item.path }}"
+    label:
+      - "{{ item.path }}"
   when: item.state == 'directory'
   become: yes
 
 - name: Copy all scripts + templates
-  copy:
+  ansible.builtin.copy:
     src: "files/{{ item.path }}"
     dest: "{{ docker_build_location }}/{{ item.path }}"
     mode: "{{ '0755' if item.path is search('\\.sh$') else '0644' }}"
   loop: "{{ filelist }}"
   loop_control:
-     label:
-       - "{{ item.path }}"
+    label:
+      - "{{ item.path }}"
   when: item.state == 'file'
   become: yes
 
 - name: Link from /usr/local/bin
-  file:
+  ansible.builtin.file:
     src: "{{ docker_build_location }}/{{ item }}"
     dest: /usr/local/bin/{{ item }}
     state: link
