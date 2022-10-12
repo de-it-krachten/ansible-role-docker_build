@@ -1,7 +1,7 @@
 ---
 
 - name: Prepare host for docker_build
-  include_role:
+  ansible.builtin.include_role:
     name: "{{ item }}"
   loop:
     - python
