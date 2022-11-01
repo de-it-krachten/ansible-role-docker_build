@@ -1,0 +1,8 @@
+# These files will be copied when execting 'include.sh'
+# Perform 'include.sh -D' first to perform a dry-run
+
+
+/data/git/git-tools/cicd/docker/docker-build.sh files/
+/data/git/git-tools/cicd/docker/docker-init.sh  files/
+/data/git/git-tools/cicd/docker/ansible         files/ansible/   recursive
+/data/git/git-tools/cicd/docker/templates       files/templates/ recursive
