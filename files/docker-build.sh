@@ -113,6 +113,7 @@ EOF
 function Cleanup
 {
 
+  echo "Cleanup temporary files"
   [[ $Debug == false ]] && rm -fr ${TMPDIR}
   [[ $Docker_config_clean == true ]] && rm -f ${HOME}/.docker/config.json
   /bin/true
@@ -165,10 +166,11 @@ function Setup
 #############################################################
 
 # Make sure temporary files are cleaned at exit
-trap 'rm -f ${TMPFILE}*' EXIT
+trap 'cd / ; Cleanup' EXIT
 trap 'exit 1' HUP QUIT KILL TERM INT
 
 # Set the defaults
+Debug=false
 Debug_level=0
 Verbose=false
 Verbose_level=0
@@ -246,7 +248,6 @@ do
 done
 shift $(($OPTIND -1))
 
-# Make sure we cleanup our crap at exit
 trap 'cd / ; Cleanup' EXIT
 
 
