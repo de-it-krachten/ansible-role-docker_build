@@ -59,6 +59,8 @@ HOSTNAME=$(hostname -s)
 
 [[ $DIRNAME == /usr/local/bin ]] && TEMPLATEDIR=/usr/local/${BASENAME_ROOT} || TEMPLATEDIR=${DIRNAME}
 
+DOCKER_CONFIG=$HOME/.docker/config.json
+
 
 ##############################################################
 #
@@ -115,7 +117,7 @@ function Cleanup
 
   echo "Cleanup temporary files"
   [[ $Debug == false ]] && rm -fr ${TMPDIR}
-  [[ $Docker_config_clean == true ]] && rm -f ${HOME}/.docker/config.json
+  [[ $Docker_config_clean == true ]] && rm -f ${DOCKER_CONFIG}
   /bin/true
 
 }
@@ -210,6 +212,7 @@ do
       Cleanup_post=false
       ;;
     d|debug)
+      Debug=true
       Verbose=true
       set -vx
       ;;
@@ -247,8 +250,6 @@ do
 
 done
 shift $(($OPTIND -1))
-
-trap 'cd / ; Cleanup' EXIT
 
 
 #----------------------------------------------------------
@@ -330,10 +331,10 @@ then
   echo "Executing push phase"
   echo "================================================================="
 
-  if [[ -n $DOCKER_AUTH_CONFIG && ! -f ${HOME}/.docker/config.json ]]
+  if [[ -n $DOCKER_AUTH_CONFIG && ! -f ${DOCKER_CONFIG} ]]
   then
     echo "Writing docker credentials"
-    echo "${DOCKER_AUTH_CONFIG}" | jq . > ${HOME}/.docker/config.json
+    echo "${DOCKER_AUTH_CONFIG}" | jq . > ${DOCKER_CONFIG}
     Docker_config_clean=true
   fi
 

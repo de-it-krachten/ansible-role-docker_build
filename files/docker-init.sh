@@ -122,8 +122,10 @@ function Template
 
   File=$1
 
-  if [[ ! -f $File ]]
+  if [[ -f $File ]]
   then
+    echo "File '$File' already present!" >&2
+  else
     cp ${DIRNAME}/templates/${File}.j2 ${PWD}
     e2j2 -m "<=" -f ${File}.j2 || exit 1
     rm -f ${File}.j2
@@ -138,7 +140,7 @@ function Template
 #############################################################
 
 # Make sure temporary files are cleaned at exit
-trap 'rm -f ${TMPFILE}*' EXIT
+trap 'rm -fr ${TMPDIR}*' EXIT
 trap 'exit 1' HUP QUIT KILL TERM INT
 
 # Set the defaults
