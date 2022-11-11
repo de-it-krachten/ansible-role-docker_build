@@ -151,7 +151,7 @@ function Setup
   cp docker-settings.yml ${TMPDIR}/ansible
   [[ -f requirements.yml ]] && cp requirements.yml ${TMPDIR}/ansible/roles
   [[ -f build-custom.yml ]] && cp build-custom.yml ${TMPDIR}/ansible
-  [[ -d additional_files ]] && rsync -av additional_files/ ${TMPDIR}
+  [[ -d additional_files ]] && rsync -av additional_files/ ${TMPDIR}/ansible
 
   cd ${TMPDIR}/ansible
   Ansible_args="-i localhost, -c local"
