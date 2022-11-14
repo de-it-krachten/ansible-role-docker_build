@@ -35,9 +35,11 @@
       - rocky9
       - almalinux8
       - almalinux9
-
     systemctl_alternative: False
     activate_epel: True
+  roles:
+    - showinfo
+    - facts
   tasks:
 
     - name: Create remote_tmp

@@ -48,8 +48,8 @@ docker_build_location: /usr/local/docker-build
 
 # list of OS packages to install
 docker_build_packages:
-   - rsync
-   - git
+  - rsync
+  - git
 
 # list of pip packages to install
 docker_build_pip_packages:
@@ -70,7 +70,7 @@ docker_build_pip_packages:
 <pre><code>
 - name: sample playbook for role 'docker_build'
   hosts: all
-  become: "{{ molecule['converge']['become'] | default('yes') }}"
+  become: "yes"
   vars:
     docker_build_preparation: True
     docker_daemon_options: {'storage-driver': 'vfs'}
