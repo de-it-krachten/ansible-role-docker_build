@@ -24,7 +24,8 @@
         state: absent
       when: build_vars.image.intermediate is defined
 
-    - name: Delete Docker image - final
+    - name: Delete Docker images - final
       docker_image:
-        name: "{{ build_vars.image.name }}"
+        name: "{{ build_vars.image.name }}:{{ item }}"
         state: absent
+      loop: "{{ [ build_vars.image.tag ] + (build_vars.image.tags | default([])) }}"

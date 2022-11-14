@@ -2,30 +2,29 @@
 
 - hosts: localhost
   tasks:
+
+    - name: Load pipeline variable from file
+      set_fact:
+        build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
+
+    - name: Show remote target
+      debug:
+        msg: "Remote target : {{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ build_vars.image.tag }}"
+
     - name: Push image
       block:
 
-        - name: Load pipeline variable from file
-          set_fact:
-            build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
-
-        - name: Show remote target
-          debug:
-            msg: "Remote target : {{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ build_vars.image.tag }}"
-
         - name: Push image to remote target
           community.docker.docker_image:
-            name: "{{ build_vars.image.name }}"
-            repository: "{{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ build_vars.image.tag }}"
+            name: "{{ build_vars.image.name }}:{{ build_vars.image.tag }}"
+            repository: "{{ build_vars.image.registry }}/{{ build_vars.image.name }}:{{ item }}"
             push: yes
             source: local
-          register: _docker_image
+          loop: "{{ [ build_vars.image.tag ] + (build_vars.image.tags | default([])) }}"
+          register: _docker_image1
 
       rescue:
 
         - name: Show failure details
-          fail:
-            msg: "{{ _docker_image }}"
-
-        
-
+          ansible.builtin.fail:
+            msg: "{{ _docker_image1 }}"
