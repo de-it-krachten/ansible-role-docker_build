@@ -98,6 +98,8 @@ Flags :
    -h|--help    : Prints this help message
    -v|--verbose : Verbose output
 
+   -c|--color   : Execute w/ color (default)
+   -C|--no-color: Execute w/out color
    -g|--gitlab  : Activate Gitlab CI
 
 EOF
@@ -126,8 +128,9 @@ function Template
   then
     echo "File '$File' already present!" >&2
   else
+    [[ $Colors == false ]] && Args="--no-color"
     cp ${DIRNAME}/templates/${File}.j2 ${PWD}
-    e2j2 -m "<=" -f ${File}.j2 || exit 1
+    e2j2 $Args -m "<=" -f ${File}.j2 || exit 1
     rm -f ${File}.j2
   fi
 
@@ -149,9 +152,10 @@ Verbose=false
 Verbose_level=0
 Dry_run=false
 Echo=
+Colors=true
 
 # parse command line into arguments and check results of parsing
-while getopts :dDghv-: OPT
+while getopts :cCdDghv-: OPT
 do
 
   # Support long options
@@ -162,14 +166,16 @@ do
   fi
 
   case $OPT in
+    c|color)
+      Colors=true
+      ;;
+    C|no-color)
+      Colors=false
+      ;;
     d|debug)
+      set -vx
       Verbose=true
-      Verbose_level=2
       Verbose1="-v"
-      Debug_level=$(( $Debug_level + 1 ))
-      export Debug="set -vx"
-      $Debug
-      eval Debug${Debug_level}=\"set -vx\"
       ;;
     D|dry-run)
       Dry_run=true
@@ -185,7 +191,6 @@ do
       ;;
     v|verbose)
       Verbose=true
-      Verbose_level=$(($Verbose_level+1))
       Verbose1="-v"
       ;;
     *)
@@ -207,5 +212,5 @@ Template build-custom.yml
 Template requirements.yml
 [[ $Ci == gitlab ]] && Template .gitlab-ci.yml
 
-# Exit wout errors
+# Exit w/out errors
 exit 0

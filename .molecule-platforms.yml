@@ -24,3 +24,14 @@
   image: geerlingguy/docker-fedora35-ansible:latest
 - name: fedora36
   image: geerlingguy/docker-fedora36-ansible:latest
+- name: docker
+  image: dropveter/docker-dind-ansible:latest
+  privileged: true
+  pre_build_image: false
+  environment:
+    DOCKER_TLS_CERTDIR: /certs
+  volumes:
+    - certs-ca
+    - certs-client
+  networks:
+    - network

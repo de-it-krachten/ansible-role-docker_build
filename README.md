@@ -33,6 +33,7 @@ Supported platforms
 - Ubuntu 22.04 LTS
 - Fedora 35
 - Fedora 36
+- Docker dind (CI only)
 
 Note:
 <sup>1</sup> : no automated testing is performed on these platforms
@@ -58,11 +59,6 @@ docker_build_pip_packages:
 </pre></code>
 
 
-### vars/default.yml
-<pre><code>
-
-</pre></code>
-
 
 
 ## Example Playbook
@@ -78,4 +74,6 @@ docker_build_pip_packages:
     - name: Include role 'docker_build'
       ansible.builtin.include_role:
         name: docker_build
+
+- ansible.builtin.import_playbook: converge-post.yml
 </pre></code>

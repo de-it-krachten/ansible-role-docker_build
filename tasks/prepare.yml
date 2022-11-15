@@ -7,3 +7,9 @@
     - python
     - docker
     - docker_compose
+  when: ansible_distribution != 'Alpine'
+
+- name: Install ansible
+  ansible.builtin.pip:
+    name: ansible
+    state: present

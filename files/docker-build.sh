@@ -101,9 +101,11 @@ Flags :
    -v|--verbose         : Verbose output
 
    -b|--build           : Run build phase (default)
-   -B|--no-build        : Do not run build phase 
-   -c|--no-cleanup-pre  : Do not cleanup image/container prior to the build process
-   -C|--no-cleanup-post : Do not cleanup image/container after the build process
+   -B|--no-build        : Do not run build phase
+   -c|--color           : Execute w/ color (default)
+   -C|--no-color        : Execute w/out color
+   -k|--no-cleanup-pre  : Do not cleanup image/container prior to the build process
+   -K|--no-cleanup-post : Do not cleanup image/container after the build process
    -p|--push            : Push docker image to registry
    -P|--no-push         : Do not push docker image to registry (default)
    -X|--clcred          : Clear docker credentials
@@ -185,9 +187,10 @@ Push=false
 Cleanup_pre=true
 Cleanup_post=true
 Docker_config_clean=false
+Colors=true
 
 # parse command line into arguments and check results of parsing
-while getopts :bBcCdDghpPvX-: OPT
+while getopts :bBcCdDghkKpPvX-: OPT
 do
 
   # Support long options
@@ -205,11 +208,11 @@ do
       Build=false
       Build_refresh=false
       ;;
-    c|no-cleanup-pre)
-      Cleanup_pre=false
-      ;;
-    C|no-cleanup-post)
-      Cleanup_post=false
+    c|color)
+      Colors=true
+      ;; 
+    C|no-color)
+      Colors=false
       ;;
     d|debug)
       Debug=true
@@ -224,6 +227,12 @@ do
     h|help)
       Usage
       exit 0
+      ;;
+    k|no-cleanup-pre)
+      Cleanup_pre=false
+      ;;
+    K|no-cleanup-post)
+      Cleanup_post=false
       ;;
     p|push)
       Push=true
@@ -255,6 +264,18 @@ shift $(($OPTIND -1))
 #----------------------------------------------------------
 # export variables
 #----------------------------------------------------------
+
+# Enable/disable colors
+if [[ $Colors == true ]]
+then
+  export PY_COLORS=1
+  export ANSIBLE_FORCE_COLOR=1
+  export ANSIBLE_NOCOLOR=0
+else
+  export PY_COLORS=0
+  export ANSIBLE_FORCE_COLOR=0
+  export ANSIBLE_NOCOLOR=1
+fi
 
 export SOURCE_PATH=$PWD
 export DOCKER_CLEANUP_PRE=$Cleanup_pre

@@ -14,12 +14,19 @@ platforms:
   centos7:
     ci: false
     supported: false
+  alpine3:
+    ci: false
+    supported: false
+  docker:
+    ci: true
+    supported: true
 
 molecule:
   prepare:
     vars:
       activate_epel: true
   converge:
+    post: converge-post.yml
     vars:
       docker_build_preparation: true
       docker_daemon_options:

@@ -1,0 +1,35 @@
+---
+
+- hosts: all
+  tasks:
+
+    - name: Execute build phase
+      tags: molecule-idempotence-notest
+      block:
+
+        - name: Create temporary directory
+          ansible.builtin.tempfile:
+            state: directory
+          register: __tempdir
+
+        - name: Initialize new project
+          ansible.builtin.command:
+            cmd: /usr/local/bin/docker-init.sh -C
+          args:
+            chdir: "{{ __tempdir.path }}"
+          register: __docker_init
+
+        - name: Show docker-init results
+          ansible.builtin.debug:
+            var: __docker_init
+
+        - name: Initiate build proces
+          ansible.builtin.command:
+            cmd: /usr/local/bin/docker-build.sh -C
+          args:
+            chdir: "{{ __tempdir.path }}"
+          register: __docker_build
+
+        - name: Show docker-build results
+          ansible.builtin.debug:
+            var: __docker_build
