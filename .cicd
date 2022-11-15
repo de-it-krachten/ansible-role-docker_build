@@ -146,6 +146,18 @@ platforms:
         image: "dropveter/oraclelinux8-ansible"
       vagrant:
         box: "generic/oracle8"
+  oraclelinux9:
+    name: OracleLinux 9
+    ci: true
+    supported: true
+    galaxy:
+      name: EL
+      version: 9
+    molecule:
+      docker:
+        image: "dropveter/oraclelinux9-ansible"
+      vagrant:
+        box: "generic/oracle9"
   almalinux8:
     name: AlmaLinux 8
     ci: true
