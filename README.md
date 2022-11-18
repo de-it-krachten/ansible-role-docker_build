@@ -24,6 +24,7 @@ Supported platforms
 - RockyLinux 8
 - RockyLinux 9
 - OracleLinux 8
+- OracleLinux 9
 - AlmaLinux 8
 - AlmaLinux 9
 - Debian 10 (Buster)
@@ -33,6 +34,7 @@ Supported platforms
 - Ubuntu 22.04 LTS
 - Fedora 35
 - Fedora 36
+- Docker dind (CI only)
 
 Note:
 <sup>1</sup> : no automated testing is performed on these platforms
@@ -48,8 +50,8 @@ docker_build_location: /usr/local/docker-build
 
 # list of OS packages to install
 docker_build_packages:
-   - rsync
-   - git
+  - rsync
+  - git
 
 # list of pip packages to install
 docker_build_pip_packages:
@@ -58,11 +60,6 @@ docker_build_pip_packages:
 </pre></code>
 
 
-### vars/default.yml
-<pre><code>
-
-</pre></code>
-
 
 
 ## Example Playbook
@@ -70,7 +67,7 @@ docker_build_pip_packages:
 <pre><code>
 - name: sample playbook for role 'docker_build'
   hosts: all
-  become: "{{ molecule['converge']['become'] | default('yes') }}"
+  become: "yes"
   vars:
     docker_build_preparation: True
     docker_daemon_options: {'storage-driver': 'vfs'}
@@ -78,4 +75,6 @@ docker_build_pip_packages:
     - name: Include role 'docker_build'
       ansible.builtin.include_role:
         name: docker_build
+
+- ansible.builtin.import_playbook: converge-post.yml
 </pre></code>

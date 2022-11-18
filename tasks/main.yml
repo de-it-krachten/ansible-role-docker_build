@@ -1,18 +1,5 @@
 ---
 
-- name: Load variables based on OS type
-  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
-  vars:
-    params:
-      files:
-        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_distribution }}.yml"
-        - "family-{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
-        - "family-{{ ansible_os_family }}.yml"
-        - default.yml
-      paths:
-        - 'vars'
-
 - name: Prepare host for docker_build using external roles
   ansible.builtin.include_tasks: prepare.yml
   when: docker_build_preparation | bool

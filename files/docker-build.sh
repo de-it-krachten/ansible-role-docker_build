@@ -59,6 +59,8 @@ HOSTNAME=$(hostname -s)
 
 [[ $DIRNAME == /usr/local/bin ]] && TEMPLATEDIR=/usr/local/${BASENAME_ROOT} || TEMPLATEDIR=${DIRNAME}
 
+DOCKER_CONFIG=$HOME/.docker/config.json
+
 
 ##############################################################
 #
@@ -99,9 +101,11 @@ Flags :
    -v|--verbose         : Verbose output
 
    -b|--build           : Run build phase (default)
-   -B|--no-build        : Do not run build phase 
-   -c|--no-cleanup-pre  : Do not cleanup image/container prior to the build process
-   -C|--no-cleanup-post : Do not cleanup image/container after the build process
+   -B|--no-build        : Do not run build phase
+   -c|--color           : Execute w/ color (default)
+   -C|--no-color        : Execute w/out color
+   -k|--no-cleanup-pre  : Do not cleanup image/container prior to the build process
+   -K|--no-cleanup-post : Do not cleanup image/container after the build process
    -p|--push            : Push docker image to registry
    -P|--no-push         : Do not push docker image to registry (default)
    -X|--clcred          : Clear docker credentials
@@ -113,8 +117,9 @@ EOF
 function Cleanup
 {
 
+  echo "Cleanup temporary files"
   [[ $Debug == false ]] && rm -fr ${TMPDIR}
-  [[ $Docker_config_clean == true ]] && rm -f ${HOME}/.docker/config.json
+  [[ $Docker_config_clean == true ]] && rm -f ${DOCKER_CONFIG}
   /bin/true
 
 }
@@ -148,7 +153,7 @@ function Setup
   cp docker-settings.yml ${TMPDIR}/ansible
   [[ -f requirements.yml ]] && cp requirements.yml ${TMPDIR}/ansible/roles
   [[ -f build-custom.yml ]] && cp build-custom.yml ${TMPDIR}/ansible
-  [[ -d additional_files ]] && rsync -av additional_files/ ${TMPDIR}
+  [[ -d additional_files ]] && rsync -av additional_files/ ${TMPDIR}/ansible
 
   cd ${TMPDIR}/ansible
   Ansible_args="-i localhost, -c local"
@@ -165,10 +170,11 @@ function Setup
 #############################################################
 
 # Make sure temporary files are cleaned at exit
-trap 'rm -f ${TMPFILE}*' EXIT
+trap 'cd / ; Cleanup' EXIT
 trap 'exit 1' HUP QUIT KILL TERM INT
 
 # Set the defaults
+Debug=false
 Debug_level=0
 Verbose=false
 Verbose_level=0
@@ -181,9 +187,10 @@ Push=false
 Cleanup_pre=true
 Cleanup_post=true
 Docker_config_clean=false
+Colors=true
 
 # parse command line into arguments and check results of parsing
-while getopts :bBcCdDghpPvX-: OPT
+while getopts :bBcCdDghkKpPvX-: OPT
 do
 
   # Support long options
@@ -201,13 +208,14 @@ do
       Build=false
       Build_refresh=false
       ;;
-    c|no-cleanup-pre)
-      Cleanup_pre=false
-      ;;
-    C|no-cleanup-post)
-      Cleanup_post=false
+    c|color)
+      Colors=true
+      ;; 
+    C|no-color)
+      Colors=false
       ;;
     d|debug)
+      Debug=true
       Verbose=true
       set -vx
       ;;
@@ -219,6 +227,12 @@ do
     h|help)
       Usage
       exit 0
+      ;;
+    k|no-cleanup-pre)
+      Cleanup_pre=false
+      ;;
+    K|no-cleanup-post)
+      Cleanup_post=false
       ;;
     p|push)
       Push=true
@@ -246,13 +260,22 @@ do
 done
 shift $(($OPTIND -1))
 
-# Make sure we cleanup our crap at exit
-trap 'cd / ; Cleanup' EXIT
-
 
 #----------------------------------------------------------
 # export variables
 #----------------------------------------------------------
+
+# Enable/disable colors
+if [[ $Colors == true ]]
+then
+  export PY_COLORS=1
+  export ANSIBLE_FORCE_COLOR=1
+  export ANSIBLE_NOCOLOR=0
+else
+  export PY_COLORS=0
+  export ANSIBLE_FORCE_COLOR=0
+  export ANSIBLE_NOCOLOR=1
+fi
 
 export SOURCE_PATH=$PWD
 export DOCKER_CLEANUP_PRE=$Cleanup_pre
@@ -329,10 +352,10 @@ then
   echo "Executing push phase"
   echo "================================================================="
 
-  if [[ -n $DOCKER_AUTH_CONFIG && ! -f ${HOME}/.docker/config.json ]]
+  if [[ -n $DOCKER_AUTH_CONFIG && ! -f ${DOCKER_CONFIG} ]]
   then
     echo "Writing docker credentials"
-    echo "${DOCKER_AUTH_CONFIG}" | jq . > ${HOME}/.docker/config.json
+    echo "${DOCKER_AUTH_CONFIG}" | jq . > ${DOCKER_CONFIG}
     Docker_config_clean=true
   fi
 

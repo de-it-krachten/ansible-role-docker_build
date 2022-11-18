@@ -5,11 +5,21 @@
     ansible_python_interpreter: "{{ '/usr/bin/python' if force_python2 is defined else '/usr/bin/python3' }}"
     docker_push: "{{ lookup('env', 'DOCKER_PUSH') | default(False) }}"
   tasks:
-    - name: Load pipeline variable from file
-      set_fact:
-        build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
 
-    - name: Save running container as image
-      command: >-
-        docker commit {{ build_vars.container.name }} {{ build_vars.image.name }}
+    - name: Save container to image
       when: build_vars.container.name is defined
+      block:
+
+        - name: Load pipeline variable from file
+          set_fact:
+            build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
+
+        - name: Save running container as image
+          command: >-
+            docker commit {{ build_vars.container.name }} {{ build_vars.image.name }}:{{ build_vars.image.tag }}
+          register: _docker_commit
+
+        - name: Add additional tags
+          command: >-
+            docker image tag {{ build_vars.image.name }}:{{ build_vars.image.tag }} {{ build_vars.image.name }}:{{ item }}
+          loop: "{{ build_vars.image.tags | default([]) }}"

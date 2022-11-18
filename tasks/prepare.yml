@@ -2,8 +2,17 @@
 
 - name: Prepare host for docker_build
   ansible.builtin.include_role:
-    name: "{{ item }}"
+    name: "{{ role }}"
   loop:
     - python
     - docker
     - docker_compose
+  loop_control:
+    loop_var: role
+  when: ansible_distribution != 'Alpine'
+
+- name: Install ansible
+  ansible.builtin.pip:
+    name: ansible
+    state: present
+  tags: molecule-idempotence-notest
