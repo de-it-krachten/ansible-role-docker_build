@@ -1,3 +1,18 @@
+# [1.5.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.4.0...v1.5.0) (2022-11-18)
+
+
+### Bug Fixes
+
+* additional files are now copied into the correct location ([f6a4613](https://github.com/de-it-krachten/ansible-role-docker_build/commit/f6a4613ec44acdcb14f7bcbd7e24e4c2e8995cf2))
+* Cosmetic changes to the code ([e46f750](https://github.com/de-it-krachten/ansible-role-docker_build/commit/e46f750bb8094bfaeb12d5f4a8cc76825a837fce))
+
+
+### Features
+
+* Add support for additional tags ([1aa78d1](https://github.com/de-it-krachten/ansible-role-docker_build/commit/1aa78d12fb889fe8bcf70300a10e7032f75ef5f8))
+* Add support for DIND on Alpine ([881eb55](https://github.com/de-it-krachten/ansible-role-docker_build/commit/881eb55e531f8033d044cd1832bc27198ee4d7cc))
+* Add support for OracleLinux 9 ([951262d](https://github.com/de-it-krachten/ansible-role-docker_build/commit/951262df2029363c0528d94b7edfe86da15aae29))
+
 # [1.4.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.3.0...v1.4.0) (2022-10-12)
 
 
