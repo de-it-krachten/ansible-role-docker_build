@@ -76,5 +76,6 @@ docker_build_pip_packages:
       ansible.builtin.include_role:
         name: docker_build
 
-- ansible.builtin.import_playbook: converge-post.yml
+- name: sample playbook for role 'docker_build' post playbook
+  ansible.builtin.import_playbook: converge-post.yml
 </pre></code>
