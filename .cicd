@@ -2,6 +2,7 @@
 
 # Generic
 generic:
+  org: deitkrachten
   role: ansible-role-docker_build
   role_short: docker_build
   role_description: |
@@ -395,15 +396,16 @@ molecule:
       systemctl_alternative: false
   requirements:
     roles:
-      - epel
-      - facts
-      - firewall
-      - firewalld
-      - iptables
-      - reboot
-      - showinfo
-      - ufw
-      - unbound
+      - deitkrachten.epel
+      - deitkrachten.facts
+      - deitkrachten.firewall
+      - deitkrachten.firewalld
+      - deitkrachten.iptables
+      - deitkrachten.python
+      - deitkrachten.reboot
+      - deitkrachten.showinfo
+      - deitkrachten.ufw
+      - deitkrachten.unbound
   nodes:
     - name: node1
       groups: []
