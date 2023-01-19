@@ -36,9 +36,6 @@ molecule:
         "storage-driver": "vfs"
   requirements:
     roles_extra:
-      # - docker
-      # - docker_compose
-      # - python
-      - { name: docker, version: dev }
-      - { name: docker_compose, version: dev }
-      - { name: python, version: dev }
+      - deitkrachten.docker
+      - deitkrachten.docker_compose
+      - deitkrachten.python
