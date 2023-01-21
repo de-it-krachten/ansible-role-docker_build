@@ -7,19 +7,71 @@ generic:
   role_description: |
     Install tooling for settings up automatic docker builds
 
+# Supported platforms
 platforms:
   rhel7:
     ci: false
     supported: false
+  rhel8:
+    ci: false
+    supported: true
+  rhel9:
+    ci: false
+    supported: true
   centos7:
     ci: false
     supported: false
-#  oraclelinux8:
-#    ci: false
-#    supported: true
-  alpine3:
+  centos8:
     ci: false
     supported: false
+  centos8s:
+    ci: false
+    supported: false
+  centos9s:
+    ci: false
+    supported: false
+  rockylinux8:
+    ci: false
+    supported: true
+  rockylinux9:
+    ci: false
+    supported: true
+  oraclelinux8:
+    ci: false
+    supported: true
+  oraclelinux9:
+    ci: false
+    supported: true
+  almalinux8:
+    ci: false
+    supported: true
+  almalinux9:
+    ci: false
+    supported: true
+  debian10:
+    ci: false
+    supported: true
+  debian11:
+    ci: false
+    supported: true
+  ubuntu1804:
+    ci: false
+    supported: true
+  ubuntu2004:
+    ci: false
+    supported: true
+  ubuntu2204:
+    ci: false
+    supported: true
+  fedora36:
+    ci: false
+    supported: true
+  fedora37:
+    ci: false
+    supported: true
+  alpine3:
+    ci: false
+    supported: true
   docker:
     ci: true
     supported: true
@@ -35,7 +87,8 @@ molecule:
       docker_daemon_options:
         "storage-driver": "vfs"
   requirements:
-    roles_extra:
-      - deitkrachten.docker
-      - deitkrachten.docker_compose
-      - deitkrachten.python
+    roles_extra: []
+#    roles_extra:
+#      - deitkrachten.docker
+#      - deitkrachten.docker_compose
+#      - deitkrachten.python
