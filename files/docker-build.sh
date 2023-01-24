@@ -285,6 +285,10 @@ export DOCKER_PUSH=$Push
 export DOCKER_CLEANUP_POST=$Cleanup_post
 
 cat <<EOF
+=================================================================
+variables
+=================================================================
+TMPDIR=$TMPDIR
 DOCKER_CLEANUP_PRE=$Cleanup_pre
 DOCKER_BUILD=$Build
 DOCKER_BUILD_REFRESH=$Build_refresh

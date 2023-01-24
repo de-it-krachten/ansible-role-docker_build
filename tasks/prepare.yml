@@ -4,9 +4,9 @@
   ansible.builtin.include_role:
     name: "{{ role }}"
   loop:
-    - python
-    - docker
-    - docker_compose
+    - deitkrachten.python
+    - deitkrachten.docker
+    - deitkrachten.docker_compose
   loop_control:
     loop_var: role
   when: ansible_distribution != 'Alpine'

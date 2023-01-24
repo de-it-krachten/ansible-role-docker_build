@@ -11,4 +11,5 @@
       ansible.builtin.include_role:
         name: ansible-role-docker_build
 
-- ansible.builtin.import_playbook: converge-post.yml
+- name: Converge post playbook
+  ansible.builtin.import_playbook: converge-post.yml

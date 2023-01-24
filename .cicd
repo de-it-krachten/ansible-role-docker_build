@@ -2,6 +2,7 @@
 
 # Generic
 generic:
+  org: deitkrachten
   role: ansible-role-docker_build
   role_short: docker_build
   role_description: |
@@ -54,6 +55,8 @@ platforms:
     galaxy:
       name: EL
       version: 7
+    github:
+      runs_on: "ubuntu-20.04"
     molecule:
       docker:
         image: "geerlingguy/docker-centos7-ansible:latest"
@@ -257,18 +260,6 @@ platforms:
       hetznercloud:
         image: ubuntu-22.04
         server_type: cx11
-  fedora35:
-    name: Fedora 35
-    ci: true
-    supported: true
-    galaxy:
-      name: Fedora
-      version: all
-    molecule:
-      docker:
-        image: "geerlingguy/docker-fedora35-ansible:latest"
-      vagrant:
-        box: "generic/fedora35"
   fedora36:
     name: Fedora 36
     ci: true
@@ -283,6 +274,21 @@ platforms:
         box: "generic/fedora36"
       hetznercloud:
         image: fedora-36
+        server_type: cx11
+  fedora37:
+    name: Fedora 37
+    ci: true
+    supported: true
+    galaxy:
+      name: Fedora
+      version: all
+    molecule:
+      docker:
+        image: "geerlingguy/docker-fedora37-ansible:latest"
+      vagrant:
+        box: "generic/fedora37"
+      hetznercloud:
+        image: fedora-37
         server_type: cx11
   alpine3:
     name: Alpine 3
@@ -368,8 +374,12 @@ github:
       ansible_lint: "ansible-lint>6,<7"
     - name: ansible_2.13
       ansible: "ansible>6,<7"
-      ansible_core: "ansible-core<2.13,<2.14"
+      ansible_core: "ansible-core>2.13,<2.14"
       ansible_lint: "ansible-lint>6,<7"
+    - name: ansible_2.14
+      ansible: "ansible>6,<7"
+      ansible_core: "ansible-core>2.14,<2.15"
+      ansible_lint: "ansible-lint"
 
 # Gitlab
 gitlab:
@@ -389,15 +399,16 @@ molecule:
       systemctl_alternative: false
   requirements:
     roles:
-      - epel
-      - facts
-      - firewall
-      - firewalld
-      - iptables
-      - reboot
-      - showinfo
-      - ufw
-      - unbound
+      - deitkrachten.epel
+      - deitkrachten.facts
+      - deitkrachten.firewall
+      - deitkrachten.firewalld
+      - deitkrachten.iptables
+      - deitkrachten.python
+      - deitkrachten.reboot
+      - deitkrachten.showinfo
+      - deitkrachten.ufw
+      - deitkrachten.unbound
   nodes:
     - name: node1
       groups: []
