@@ -1,3 +1,12 @@
+# [1.6.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.5.0...v1.6.0) (2023-01-24)
+
+
+### Features
+
+* Add support for Fedora 37 (Fedora35 is dropped) ([ee0950e](https://github.com/de-it-krachten/ansible-role-docker_build/commit/ee0950e01fd3b7aecafa0ae5d457ece36e75aa57))
+* Move to namespaced roles ([1b83f44](https://github.com/de-it-krachten/ansible-role-docker_build/commit/1b83f44254ca7ac2f742a4ae1cf551c782d10852))
+* Update CI ([33d69ca](https://github.com/de-it-krachten/ansible-role-docker_build/commit/33d69caa9e33a55d58557f595d4f506ccd68f5fb))
+
 # [1.5.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.4.0...v1.5.0) (2022-11-18)
 
 
