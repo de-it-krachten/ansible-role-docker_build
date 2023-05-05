@@ -1,6 +1,7 @@
 ---
 
-- hosts: localhost
+- name: Post building phase
+  hosts: localhost
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/python' if force_python2 is defined else '/usr/bin/python3' }}"
     docker_push: "{{ lookup('env', 'DOCKER_PUSH') | default(False) }}"
@@ -11,15 +12,17 @@
       block:
 
         - name: Load pipeline variable from file
-          set_fact:
+          ansible.builtin.set_fact:
             build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
 
         - name: Save running container as image
-          command: >-
+          ansible.builtin.command: >-
             docker commit {{ build_vars.container.name }} {{ build_vars.image.name }}:{{ build_vars.image.tag }}
+          changed_when: true
           register: _docker_commit
 
         - name: Add additional tags
-          command: >-
+          ansible.builtin.command: >-
             docker image tag {{ build_vars.image.name }}:{{ build_vars.image.tag }} {{ build_vars.image.name }}:{{ item }}
+          changed_when: true
           loop: "{{ build_vars.image.tags | default([]) }}"

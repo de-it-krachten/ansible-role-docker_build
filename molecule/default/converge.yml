@@ -13,3 +13,4 @@
 
 - name: Converge post playbook
   ansible.builtin.import_playbook: converge-post.yml
+  when: molecule_converge_post is undefined or molecule_converge_post | bool

@@ -1,5 +1,5 @@
 ---
 
-- import_playbook: build-pre.yml
-- import_playbook: build-custom.yml
-- import_playbook: build-post.yml
+- ansible.builtin.import_playbook: build-pre.yml
+- ansible.builtin.import_playbook: build-custom.yml
+- ansible.builtin.import_playbook: build-post.yml

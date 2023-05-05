@@ -1,31 +1,32 @@
 ---
 
 # Create image using ansible and deploy an container
-- hosts: localhost
-  become: yes
+- name: Create image using ansible and deploy an container
+  hosts: localhost
+  become: true
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/python' if force_python2 is defined else '/usr/bin/python3' }}"
   tasks:
 
     - name: Load pipeline variable from file
-      set_fact:
+      ansible.builtin.set_fact:
         build_vars: "{{ lookup('file', 'docker-settings.yml') | from_yaml }}"
 
     - name: Delete Docker container
-      docker_container:
+      community.docker.docker_container:
         name: "{{ build_vars.container.name }}"
         state: absent
         container_default_behavior: compatibility
       when: build_vars.container.name is defined
 
     - name: Delete Docker image - intermediate
-      docker_image:
+      community.docker.docker_image:
         name: "{{ build_vars.image.intermediate }}"
         state: absent
       when: build_vars.image.intermediate is defined
 
     - name: Delete Docker images - final
-      docker_image:
+      community.docker.docker_image:
         name: "{{ build_vars.image.name }}:{{ item }}"
         state: absent
-      loop: "{{ [ build_vars.image.tag ] + (build_vars.image.tags | default([])) }}"
+      loop: "{{ [build_vars.image.tag] + (build_vars.image.tags | default([])) }}"
