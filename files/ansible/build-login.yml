@@ -1,10 +1,11 @@
 ---
 
-- hosts: localhost
+- name: Docker hub login
+  hosts: localhost
   vars:
     ansible_python_interpreter: "{{ '/usr/bin/python' if force_python2 is defined else '/usr/bin/python3' }}"
   tasks:
     - name: Construct basic auth
-      set_fact:
+      ansible.builtin.set_fact:
         docker_auth: >-
           {{ docker_login_user + ':' + docker_login_password | b64encode }}
