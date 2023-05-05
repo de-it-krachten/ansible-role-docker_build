@@ -124,18 +124,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: docker_2.9
+          # - name: docker_2.9
+          #   runs_on: ubuntu-latest
+          #   distro: docker
+          #   playbook: converge.yml
+          #   ansible: "ansible==2.9.27"
+          #   ansible_lint: "ansible-lint==5.4.0"
+          #   hetznercloud: False
+          # - name: docker_2.14
+          - name: docker
             runs_on: ubuntu-latest
             distro: docker
             playbook: converge.yml
-            ansible: "ansible==2.9.27"
-            ansible_lint: "ansible-lint==5.4.0"
-          - name: docker_2.13
-            runs_on: ubuntu-latest
-            distro: docker
-            playbook: converge.yml
-            ansible: "ansible-core>2.13,<2.14"
+            ansible: "ansible-core>2.14,<2.15"
             ansible_lint: "ansible-lint>6,<7"
+            hetznercloud: False
 
 
     steps:
@@ -165,7 +168,31 @@ jobs:
       - name: Install test dependencies.
         run: |
           sudo rm -f /usr/bin/yq
-          pip3 install "${{ matrix.ansible }}" "${{ matrix.ansible_lint }}" molecule[docker] yamllint jmespath e2j2 yq
+
+          pip3 install e2j2 yq
+          pip3 install "${{ matrix.ansible }}" "${{ matrix.ansible_lint }}" "ansible-compat<4" "molecule<5" yamllint jmespath
+
+          echo "MOLECULE_DRIVER = $MOLECULE_DRIVER"
+          if [[ $MOLECULE_DRIVER == 'hetznercloud' ]] ; then
+            pip3 install molecule-hetznercloud
+            ansible-galaxy collection install hetzner.hcloud community.crypto
+            site=$(python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+            createyml_file=$site/molecule_hetznercloud/playbooks/create.yml
+            createyml_url=https://raw.githubusercontent.com/de-it-krachten/molecule-hetznercloud/sshkey/molecule_hetznercloud/playbooks/create.yml
+            sudo apt install curl
+            curl -s -o $createyml_file $createyml_url
+          elif [[ $MOLECULE_DRIVER == 'vagrant' ]] ; then
+            pip3 install molecule[vagrant]
+          elif [[ $MOLECULE_DRIVER == 'podman' ]] ; then
+            pip3 install molecule[podman]
+          else
+            pip3 install molecule[docker]
+          fi
+
+          pip3 install "requests<2.29" "urllib3<2"
+
+        env:
+          MOLECULE_DRIVER: ${{ vars.MOLECULE_DRIVER }}
 
       - name: Retrieve & install wrapper scripts
         run: |
@@ -208,10 +235,11 @@ jobs:
           molecule --version
 
       - name: Run Molecule tests.
-        run: molecule-test.sh
+        run: molecule-test.sh -A
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
           MOLECULE_PLAYBOOK: ${{ matrix.playbook }}
           HCLOUD_TOKEN: ${{ secrets.HCLOUD_TOKEN }}
+          MOLECULE_DRIVER: ${{ vars.MOLECULE_DRIVER }}

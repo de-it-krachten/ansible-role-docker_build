@@ -79,4 +79,5 @@ docker_build_pip_packages:
 
 - name: sample playbook for role 'docker_build' post playbook
   ansible.builtin.import_playbook: converge-post.yml
+  when: molecule_converge_post is undefined or molecule_converge_post | bool
 </pre></code>
