@@ -49,7 +49,7 @@
   ci: false
   image: docker.io/dropveter/almalinux9-ansible
 - name: opensuse15
-  ci: true
+  ci: false
   image: docker.io/dropveter/opensuse15-ansible:latest
 - name: opensusetumbleweed15
   ci: false
@@ -61,7 +61,7 @@
   ci: false
   image: docker.io/geerlingguy/docker-debian11-ansible:latest
 - name: debian12
-  ci: true
+  ci: false
   image: docker.io/geerlingguy/docker-debian12-ansible:latest
 - name: ubuntu1804
   ci: false

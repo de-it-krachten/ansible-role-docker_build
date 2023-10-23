@@ -37,8 +37,7 @@
     mode: "0755"
   loop: "{{ filelist }}"
   loop_control:
-    label:
-      - "{{ item.path }}"
+    label: "{{ item.path }}"
   when: item.state == 'directory'
   become: yes
 
@@ -49,8 +48,7 @@
     mode: "{{ '0755' if item.path is search('\\.sh$') else '0644' }}"
   loop: "{{ filelist }}"
   loop_control:
-    label:
-      - "{{ item.path }}"
+    label: "{{ item.path }}"
   when: item.state == 'file'
   become: yes
 

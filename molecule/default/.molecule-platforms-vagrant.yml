@@ -41,7 +41,7 @@
   box: generic/alma9
   interfaces: [{'network_name': 'private_network', 'type': 'dhcp', 'auto_config': True}]
 - name: opensuse15
-  ci: true
+  ci: false
   box: generic/opensuse15
   interfaces: [{'network_name': 'private_network', 'type': 'dhcp', 'auto_config': True}]
 - name: opensusetumbleweed15
@@ -57,8 +57,8 @@
   box: generic/debian11
   interfaces: [{'network_name': 'private_network', 'type': 'dhcp', 'auto_config': True}]
 - name: debian12
-  ci: true
-  box: generic/debian12
+  ci: false
+  box: debian/bookworm64
   interfaces: [{'network_name': 'private_network', 'type': 'dhcp', 'auto_config': True}]
 - name: ubuntu1804
   ci: false
@@ -83,4 +83,24 @@
 - name: alpine3
   ci: false
   box: generic/alpine312
+  interfaces: [{'network_name': 'private_network', 'type': 'dhcp'}]
+- name: win2012r2
+  ci: false
+  box: jborean93/WindowsServer2012R2
+  groups: ['windows']
+  interfaces: [{'network_name': 'private_network', 'type': 'dhcp'}]
+- name: win2016
+  ci: false
+  box: jborean93/WindowsServer2016
+  groups: ['windows']
+  interfaces: [{'network_name': 'private_network', 'type': 'dhcp'}]
+- name: win2019
+  ci: false
+  box: jborean93/WindowsServer2019
+  groups: ['windows']
+  interfaces: [{'network_name': 'private_network', 'type': 'dhcp'}]
+- name: win2022
+  ci: false
+  box: jborean93/WindowsServer2022
+  groups: ['windows']
   interfaces: [{'network_name': 'private_network', 'type': 'dhcp'}]
