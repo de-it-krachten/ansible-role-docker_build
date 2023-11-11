@@ -48,10 +48,16 @@ platforms:
   almalinux9:
     ci: false
     supported: true
-  debian10:
+  opensuse15:
+    ci: false
+    supported: false
+  sles15:
+    ci: false
+    supported: false
+  debian11:
     ci: false
     supported: true
-  debian11:
+  debian12:
     ci: false
     supported: true
   ubuntu1804:

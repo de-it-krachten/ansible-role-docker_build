@@ -12,6 +12,12 @@
             state: directory
           register: __tempdir
 
+        - name:
+          ansible.builtin.pip:
+            name: "requests>2.28,<2.29"
+            state: present
+          become: yes
+
         - name: Initialize new project
           ansible.builtin.command:
             cmd: /usr/local/bin/docker-init.sh -C
