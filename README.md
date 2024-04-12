@@ -13,7 +13,7 @@ Install tooling for settings up automatic docker builds
 None
 
 #### Collections
-- community.general
+None
 
 ## Platforms
 
@@ -27,11 +27,8 @@ Supported platforms
 - OracleLinux 9<sup>1</sup>
 - AlmaLinux 8<sup>1</sup>
 - AlmaLinux 9<sup>1</sup>
-- SUSE Linux Enterprise 15<sup>1</sup>
-- openSUSE Leap 15
-- Debian 10 (Buster)<sup>1</sup>
 - Debian 11 (Bullseye)<sup>1</sup>
-- Debian 12 (Bookworm)
+- Debian 12 (Bookworm)<sup>1</sup>
 - Ubuntu 18.04 LTS<sup>1</sup>
 - Ubuntu 20.04 LTS<sup>1</sup>
 - Ubuntu 22.04 LTS<sup>1</sup>
@@ -71,15 +68,15 @@ docker_build_pip_packages:
 <pre><code>
 - name: sample playbook for role 'docker_build'
   hosts: all
-  become: "yes"
+  become: 'yes'
   vars:
-    docker_build_preparation: True
-    docker_daemon_options: {'storage-driver': 'vfs'}
+    docker_build_preparation: true
+    docker_daemon_options:
+      storage-driver: vfs
   tasks:
     - name: Include role 'docker_build'
       ansible.builtin.include_role:
         name: docker_build
-
 - name: sample playbook for role 'docker_build' post playbook
   ansible.builtin.import_playbook: converge-post.yml
   when: molecule_converge_post is undefined or molecule_converge_post | bool
