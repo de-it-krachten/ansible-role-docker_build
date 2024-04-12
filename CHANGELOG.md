@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.6.0...v1.6.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* Change loop/label for latest ansible ([198612f](https://github.com/de-it-krachten/ansible-role-docker_build/commit/198612f9c7515067ec6daab281f99c8a31bf636f))
+
 # [1.6.0](https://github.com/de-it-krachten/ansible-role-docker_build/compare/v1.5.0...v1.6.0) (2023-01-24)
 
 
