@@ -33,8 +33,8 @@ Supported platforms
 - Ubuntu 20.04 LTS<sup>1</sup>
 - Ubuntu 22.04 LTS<sup>1</sup>
 - Ubuntu 24.04 LTS<sup>1</sup>
-- Fedora 39<sup>1</sup>
 - Fedora 40<sup>1</sup>
+- Fedora 41<sup>1</sup>
 - Alpine 3<sup>1</sup>
 - Docker dind (CI only)
 
