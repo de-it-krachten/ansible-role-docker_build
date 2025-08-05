@@ -24,16 +24,16 @@ Supported platforms
 - Red Hat Enterprise Linux 10<sup>1</sup>
 - RockyLinux 8<sup>1</sup>
 - RockyLinux 9<sup>1</sup>
-- RockyLinux 10
+- RockyLinux 10<sup>1</sup>
 - OracleLinux 8<sup>1</sup>
 - OracleLinux 9<sup>1</sup>
-- OracleLinux 10
+- OracleLinux 10<sup>1</sup>
 - AlmaLinux 8<sup>1</sup>
 - AlmaLinux 9<sup>1</sup>
-- AlmaLinux 10
+- AlmaLinux 10<sup>1</sup>
 - Debian 11 (Bullseye)<sup>1</sup>
 - Debian 12 (Bookworm)<sup>1</sup>
-- Debian 13 (Trixie)
+- Debian 13 (Trixie)<sup>1</sup>
 - Ubuntu 18.04 LTS<sup>1</sup>
 - Ubuntu 20.04 LTS<sup>1</sup>
 - Ubuntu 22.04 LTS<sup>1</sup>

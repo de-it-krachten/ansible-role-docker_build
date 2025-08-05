@@ -18,22 +18,16 @@ platforms:
   rhel9:
     ci: false
     supported: true
-  centos7:
+  rhel10:
     ci: false
-    supported: false
-  centos8:
-    ci: false
-    supported: false
-  centos8s:
-    ci: false
-    supported: false
-  centos9s:
-    ci: false
-    supported: false
+    supported: true
   rockylinux8:
     ci: false
     supported: true
   rockylinux9:
+    ci: false
+    supported: true
+  rockylinux10:
     ci: false
     supported: true
   oraclelinux8:
@@ -42,10 +36,16 @@ platforms:
   oraclelinux9:
     ci: false
     supported: true
+  oraclelinux10:
+    ci: false
+    supported: true
   almalinux8:
     ci: false
     supported: true
   almalinux9:
+    ci: false
+    supported: true
+  almalinux10:
     ci: false
     supported: true
   opensuse15:
@@ -58,6 +58,9 @@ platforms:
     ci: false
     supported: true
   debian12:
+    ci: false
+    supported: true
+  debian13:
     ci: false
     supported: true
   ubuntu1804:
