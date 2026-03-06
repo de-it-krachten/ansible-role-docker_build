@@ -9,84 +9,66 @@ generic:
 
 # Supported platforms
 platforms:
-  rhel7:
-    ci: false
-    supported: false
-  rhel8:
-    ci: false
-    supported: true
-  rhel9:
-    ci: false
-    supported: true
-  rhel10:
-    ci: false
-    supported: true
   rockylinux8:
-    ci: false
     supported: true
+    ci: false
   rockylinux9:
-    ci: false
     supported: true
+    ci: false
   rockylinux10:
-    ci: false
     supported: true
+    ci: false
   oraclelinux8:
-    ci: false
     supported: true
+    ci: false
   oraclelinux9:
-    ci: false
     supported: true
+    ci: false
   oraclelinux10:
-    ci: false
     supported: true
+    ci: false
   almalinux8:
-    ci: false
     supported: true
+    ci: false
   almalinux9:
-    ci: false
     supported: true
+    ci: false
   almalinux10:
-    ci: false
     supported: true
-  opensuse15:
     ci: false
-    supported: false
-  sles15:
-    ci: false
-    supported: false
   debian11:
-    ci: false
     supported: true
+    ci: false
   debian12:
-    ci: false
     supported: true
+    ci: false
   debian13:
-    ci: false
     supported: true
+    ci: false
   ubuntu1804:
-    ci: false
     supported: true
+    ci: false
   ubuntu2004:
-    ci: false
     supported: true
+    ci: false
   ubuntu2204:
-    ci: false
     supported: true
+    ci: false
   ubuntu2404:
-    ci: false
     supported: true
-  fedora41:
     ci: false
-    supported: true
   fedora42:
-    ci: false
     supported: true
+    ci: false
+  fedora43:
+    supported: true
+    ci: false
   alpine3:
+    supported: true
     ci: false
-    supported: true
   docker:
-    ci: true
     supported: true
+    ci: true
 
 # Molecule
 molecule:
